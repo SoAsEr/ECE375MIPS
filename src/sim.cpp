@@ -217,7 +217,6 @@ int main(int argc, char** argv) {
             case OP_ADDI:
                 regData.registers[rt]=regData.registers[rs]+signExtImm;
                 if(regData.registers[rt]<regData.registers[rs]){
-					printf("detected overflow during addi\n");
                     err=true;
                 }
                 break;
