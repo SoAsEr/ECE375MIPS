@@ -4,9 +4,9 @@
 #include "EndianHelpers.h"
 #include <fstream>
 #include <iostream>
-using namespace std; 
+using namespace std;
 
-union REGS 
+union REGS
 {
     RegisterInfo reg;
     uint32_t registers[32] {0};
@@ -69,7 +69,7 @@ uint extractBits(uint32_t instruction, int start, int end)
 }
 
 // sign extend smol to a 32 bit unsigned int
-uint32_t signExt(uint16_t smol) 
+uint32_t signExt(uint16_t smol)
 {
     uint32_t x = smol;
     uint32_t extension = 0xffff0000;
@@ -110,13 +110,13 @@ int main(int argc, char** argv) {
     regData.reg = {};
     uint32_t PC = 0;
     bool err = false;
-    
+
     // variables to handle branch delay slot execution
     bool encounteredBranch = false;
-    bool executedDelaySlot = false; 
+    bool executedDelaySlot = false;
     uint32_t savedBranch = 0;       // saved (delayed) branch instruction
     //uint32_t savedPC = 0;           // PC when the branch wa encountered (PC for the instruction in memory after the branch instruction)
-    
+
     // start simulation
     // TODO: complete simulation loop and implement branch delay logic
     while (!err) {
@@ -160,52 +160,52 @@ int main(int argc, char** argv) {
         uint32_t jumpAddr = address<<2;// assumes PC += 4 just happened
 
         switch(opcode) {
-            case OP_ZERO: // R-type instruction 
+            case OP_ZERO: // R-type instruction
                 switch(funct) {
-                    case FUN_ADD:                         
+                    case FUN_ADD:
                         regData.registers[rd]=regData.registers[rs]+regData.registers[rt];
                         if(regData.registers[rd]<regData.registers[rs]){
                             err=true;
                         }
                         break;
-                    case FUN_ADDU: 
+                    case FUN_ADDU:
                         regData.registers[rd]=regData.registers[rs]+regData.registers[rt];
                         break;
-                    case FUN_AND: 
+                    case FUN_AND:
                         regData.registers[rd]=regData.registers[rs]&regData.registers[rt];
                         break;
-                    case FUN_JR: 
+                    case FUN_JR:
                         PC=regData.registers[rs];
                         break;
-                    case FUN_NOR: 
+                    case FUN_NOR:
                         regData.registers[rd]=~(regData.registers[rs]|regData.registers[rt]);
                         break;
-                    case FUN_OR: 
+                    case FUN_OR:
                         regData.registers[rd]=regData.registers[rs]|regData.registers[rt];
                         break;
-                    case FUN_SLT: 
+                    case FUN_SLT:
                     {
                         int32_t signedrs=regData.registers[rs];
                         int32_t signedrt=regData.registers[rt];
                         regData.registers[rd]=(signedrs < signedrt) ? 1 : 0;
                     }
                         break;
-                    case FUN_SLTU: 
+                    case FUN_SLTU:
                         regData.registers[rd]=(regData.registers[rs] < regData.registers[rt]) ? 1 : 0;
                         break;
-                    case FUN_SLL: 
+                    case FUN_SLL:
                         regData.registers[rd]=regData.registers[rt] << shamt;
                         break;
-                    case FUN_SRL: 
+                    case FUN_SRL:
                         regData.registers[rd]=regData.registers[rt] >> shamt; //logical shift right
                         break;
-                    case FUN_SUB:  
+                    case FUN_SUB:
                         regData.registers[rd]=regData.registers[rs]-regData.registers[rt];
                         if(regData.registers[rd]>regData.registers[rs]){
                             err=true;
                         }
                         break;
-                    case FUN_SUBU: 
+                    case FUN_SUBU:
                         regData.registers[rd]=regData.registers[rs]-regData.registers[rt];
                         break;
                     default:
@@ -214,19 +214,20 @@ int main(int argc, char** argv) {
                 }
                 break;
 
-            case OP_ADDI: 
+            case OP_ADDI:
                 regData.registers[rt]=regData.registers[rs]+signExtImm;
-                if(regData.registers[rd]<regData.registers[rs]){
+                if(regData.registers[rt]<regData.registers[rs]){
+					printf("detected overflow during addi\n");
                     err=true;
                 }
                 break;
-            case OP_ADDIU: 
+            case OP_ADDIU:
                 regData.registers[rt] = regData.registers[rs] + signExtImm;
                 break;
-            case OP_ANDI: 
+            case OP_ANDI:
                 regData.registers[rt]=regData.registers[rs] & zeroExtImm;
                 break;
-            case OP_BEQ: 
+            case OP_BEQ:
                 if(regData.registers[rt]==regData.registers[rs]){
                     encounteredBranch=true;
                     savedBranch=branchAddr;
@@ -238,40 +239,40 @@ int main(int argc, char** argv) {
                     savedBranch=branchAddr;
                 }
                 break;
-            case OP_BLEZ: 
+            case OP_BLEZ:
                 if(regData.registers[rs]<=0){
                     encounteredBranch=true;
                     savedBranch=branchAddr;
                 }
                 break;
-            case OP_BGTZ: 
+            case OP_BGTZ:
                 if(regData.registers[rs]>0){
                     encounteredBranch=true;
                     savedBranch=branchAddr;
                 }
                 break;
-            case OP_J: 
+            case OP_J:
                 PC=jumpAddr;
                 break;
-            case OP_JAL: 
+            case OP_JAL:
                 regData.registers[31]=PC+8;
                 PC=jumpAddr;
                 break;
-            case OP_LBU: 
+            case OP_LBU:
                 regData.registers[rs]=0;
                 myMem->getMemValue(regData.registers[rs]+signExtImm, regData.registers[rt], BYTE_SIZE);
                 break;
-            case OP_LHU: 
+            case OP_LHU:
                 regData.registers[rs]=0;
                 myMem->getMemValue(regData.registers[rs]+signExtImm, regData.registers[rt], HALF_SIZE);
                 break;
-            case OP_LUI: 
+            case OP_LUI:
                 regData.registers[rt]=immediate<<16;
                 break;
-            case OP_LW: 
+            case OP_LW:
                 myMem->getMemValue(regData.registers[rs]+signExtImm, regData.registers[rt], WORD_SIZE);
                 break;
-            case OP_ORI: 
+            case OP_ORI:
                 regData.registers[rt]=regData.registers[rs]|zeroExtImm;
                 break;
             case OP_SLTI:
@@ -280,19 +281,19 @@ int main(int argc, char** argv) {
                     regData.registers[rd]=(signedrs < signExtImm) ? 1 : 0;
                 }
                 break;
-            case OP_SLTIU: 
+            case OP_SLTIU:
                 {
                     uint32_t unsignedsignedimm=signExtImm;
                     regData.registers[rd]=(regData.registers[rs]  < unsignedsignedimm) ? 1 : 0;
                 }
                 break;
-            case OP_SB: 
+            case OP_SB:
                 myMem->setMemValue(regData.registers[rs]+signExtImm, regData.registers[rt], BYTE_SIZE);
                 break;
-            case OP_SH: 
+            case OP_SH:
                 myMem->setMemValue(regData.registers[rs]+signExtImm, regData.registers[rt], HALF_SIZE);
                 break;
-            case OP_SW: 
+            case OP_SW:
                 myMem->setMemValue(regData.registers[rs]+signExtImm, regData.registers[rt], WORD_SIZE);
                 break;
             default:
@@ -300,12 +301,12 @@ int main(int argc, char** argv) {
                 err = true;
         }
     }
-    
-    
+
+
     // dump and exit with error
     dump(myMem);
     exit(127);
-    return -1;  
+    return -1;
 }
 
 
