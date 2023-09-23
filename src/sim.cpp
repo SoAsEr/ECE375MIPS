@@ -156,17 +156,19 @@ int main(int argc, char** argv) {
         int32_t signExtImm = signExt(immediate);
         uint32_t zeroExtImm = immediate;
 
-        uint32_t branchAddr = PC + 4 + (address<<2);
+        uint32_t branchAddr = PC + (signExtImm<<2);
         uint32_t jumpAddr = address<<2;// assumes PC += 4 just happened
-
+        printf("shamt %d\n", shamt);
+        printf("%x %x %x %x %x\n", regData.reg.t0, regData.reg.t1, regData.reg.t2, regData.reg.t3, regData.reg.t4);
+        printf("opcode %x\n", opcode);
         switch(opcode) {
             case OP_ZERO: // R-type instruction
                 switch(funct) {
                     case FUN_ADD:
                         regData.registers[rd]=regData.registers[rs]+regData.registers[rt];
-                        if(regData.registers[rd]<regData.registers[rs]){
-                            err=true;
-                        }
+                        //if(regData.registers[rd]<regData.registers[rs]){
+                        //    err=true;
+                        //}
                         break;
                     case FUN_ADDU:
                         regData.registers[rd]=regData.registers[rs]+regData.registers[rt];
@@ -175,7 +177,7 @@ int main(int argc, char** argv) {
                         regData.registers[rd]=regData.registers[rs]&regData.registers[rt];
                         break;
                     case FUN_JR:
-                        PC=regData.registers[rs];
+                        PC=regData.registers[rs]; //TEST
                         break;
                     case FUN_NOR:
                         regData.registers[rd]=~(regData.registers[rs]|regData.registers[rt]);
@@ -187,23 +189,23 @@ int main(int argc, char** argv) {
                     {
                         int32_t signedrs=regData.registers[rs];
                         int32_t signedrt=regData.registers[rt];
-                        regData.registers[rd]=(signedrs < signedrt) ? 1 : 0;
+                        regData.registers[rd]=(signedrs < signedrt) ? 1 : 0; //TEST
                     }
                         break;
                     case FUN_SLTU:
-                        regData.registers[rd]=(regData.registers[rs] < regData.registers[rt]) ? 1 : 0;
+                        regData.registers[rd]=(regData.registers[rs] < regData.registers[rt]) ? 1 : 0; //TEST
                         break;
                     case FUN_SLL:
                         regData.registers[rd]=regData.registers[rt] << shamt;
                         break;
                     case FUN_SRL:
-                        regData.registers[rd]=regData.registers[rt] >> shamt; //logical shift right
+                        regData.registers[rd]=regData.registers[rt] >> shamt;
                         break;
                     case FUN_SUB:
                         regData.registers[rd]=regData.registers[rs]-regData.registers[rt];
-                        if(regData.registers[rd]>regData.registers[rs]){
-                            err=true;
-                        }
+                        //if(regData.registers[rd]>regData.registers[rs]){
+                        //    err=true;
+                        //}
                         break;
                     case FUN_SUBU:
                         regData.registers[rd]=regData.registers[rs]-regData.registers[rt];
@@ -215,13 +217,13 @@ int main(int argc, char** argv) {
                 break;
 
             case OP_ADDI:
-                regData.registers[rt]=regData.registers[rs]+signExtImm;
-                if(regData.registers[rt]<regData.registers[rs]){
-                    err=true;
-                }
+                regData.registers[rt]=regData.registers[rs]+signExtImm; 
                 break;
             case OP_ADDIU:
                 regData.registers[rt] = regData.registers[rs] + signExtImm;
+                //if(regData.registers[rt]<regData.registers[rs]){
+                //    err=true;
+                //}
                 break;
             case OP_ANDI:
                 regData.registers[rt]=regData.registers[rs] & zeroExtImm;
@@ -250,11 +252,11 @@ int main(int argc, char** argv) {
                     savedBranch=branchAddr;
                 }
                 break;
-            case OP_J:
+            case OP_J: //TEST
                 PC=jumpAddr;
                 break;
-            case OP_JAL:
-                regData.registers[31]=PC+8;
+            case OP_JAL: //TEST
+                regData.registers[31]=PC+8; 
                 PC=jumpAddr;
                 break;
             case OP_LBU:
@@ -265,22 +267,25 @@ int main(int argc, char** argv) {
                 regData.registers[rs]=0;
                 myMem->getMemValue(regData.registers[rs]+signExtImm, regData.registers[rt], HALF_SIZE);
                 break;
-            case OP_LUI:
-                regData.registers[rt]=immediate<<16;
+            case OP_LUI: //TEST
+            {
+                uint32_t bigimm=immediate;
+                regData.registers[rt]=bigimm<<16;
                 break;
+            }
             case OP_LW:
                 myMem->getMemValue(regData.registers[rs]+signExtImm, regData.registers[rt], WORD_SIZE);
                 break;
             case OP_ORI:
                 regData.registers[rt]=regData.registers[rs]|zeroExtImm;
                 break;
-            case OP_SLTI:
+            case OP_SLTI: //TEST
                 {
                     int32_t signedrs=regData.registers[rs];
                     regData.registers[rd]=(signedrs < signExtImm) ? 1 : 0;
                 }
                 break;
-            case OP_SLTIU:
+            case OP_SLTIU: //TEST
                 {
                     uint32_t unsignedsignedimm=signExtImm;
                     regData.registers[rd]=(regData.registers[rs]  < unsignedsignedimm) ? 1 : 0;
