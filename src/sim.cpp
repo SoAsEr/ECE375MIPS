@@ -217,7 +217,7 @@ int main(int argc, char** argv) {
                 break;
 
             case OP_ADDI:
-                regData.registers[rt]=regData.registers[rs]+signExtImm; 
+                regData.registers[rt]=regData.registers[rs]+signExtImm;
                 break;
             case OP_ADDIU:
                 regData.registers[rt] = regData.registers[rs] + signExtImm;
@@ -256,7 +256,7 @@ int main(int argc, char** argv) {
                 PC=jumpAddr;
                 break;
             case OP_JAL: //TEST
-                regData.registers[31]=PC+8; 
+                regData.registers[31]=PC+8;
                 PC=jumpAddr;
                 break;
             case OP_LBU:
@@ -282,6 +282,9 @@ int main(int argc, char** argv) {
             case OP_SLTI: //TEST
                 {
                     int32_t signedrs=regData.registers[rs];
+					printf("hello! inside slti \n");
+					printf("signed rs value: %d\n", signedrs);
+					printf("signExtImm value: %d\n", signExtImm);
                     regData.registers[rd]=(signedrs < signExtImm) ? 1 : 0;
                 }
                 break;
