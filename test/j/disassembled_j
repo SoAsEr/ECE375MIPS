@@ -1,0 +1,17 @@
+
+j.elf:     file format elf32-tradbigmips
+
+// is the delay slot working correctly? we should perform instruction
+// at line 4, but we don't according to the register state.
+
+Disassembly of section .text:
+
+00000000 <main>:
+   0:	08000003 	j	c <jump>
+   4:	21080001 	addi	t0,t0,1
+   8:	21080003 	addi	t0,t0,3
+
+0000000c <jump>:
+   c:	21080ff0 	addi	t0,t0,4080
+  10:	feedfeed 	0xfeedfeed
+	...
