@@ -177,7 +177,8 @@ int main(int argc, char** argv) {
                         regData.registers[rd]=regData.registers[rs]&regData.registers[rt];
                         break;
                     case FUN_JR:
-                        PC=regData.registers[rs]; //TEST
+                        encounteredBranch=true;
+                        savedBranch=regData.registers[rs];
                         break;
                     case FUN_NOR:
                         regData.registers[rd]=~(regData.registers[rs]|regData.registers[rt]);
@@ -253,11 +254,13 @@ int main(int argc, char** argv) {
                 }
                 break;
             case OP_J: //TEST
-                PC=jumpAddr;
+                encounteredBranch=true;
+                savedBranch=jumpAddr;
                 break;
             case OP_JAL: //TEST
                 regData.registers[31]=PC+8;
-                PC=jumpAddr;
+                encounteredBranch=true;
+                savedBranch=jumpAddr;
                 break;
             case OP_LBU:
                 regData.registers[rs]=0;
