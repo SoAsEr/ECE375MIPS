@@ -257,7 +257,7 @@ int main(int argc, char** argv) {
                 savedBranch=jumpAddr;
                 break;
             case OP_JAL: //TEST
-                regData.registers[31]=PC+8;
+                regData.registers[31]=PC+4;
                 encounteredBranch=true;
                 savedBranch=jumpAddr;
                 break;
@@ -284,9 +284,6 @@ int main(int argc, char** argv) {
             case OP_SLTI: //TEST
                 {
                     int32_t signedrs=regData.registers[rs];
-					printf("hello! inside slti \n");
-					printf("signed rs value: %d\n", signedrs);
-					printf("signExtImm value: %d\n", signExtImm);
                     regData.registers[rt]=(signedrs < signExtImm) ? 1 : 0;
                 }
                 break;

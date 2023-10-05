@@ -1,7 +1,5 @@
-1. write tests for jal, jr
+1. Clean up / run tests for beq, bne
 
-2. Clean up / run tests for beq, bne
+2. Tests for lbu, lhu, lui, lw, sll, srl, sb, sw, bgtz, blez, sltiu
 
-3. Tests for lbu, lhu, lui, lw, sll, srl, sb, sw, bgtz, blez, sltiu
-
-5. Verify sh works / more endianness testing
+3. Verify sh works / more endianness testing
