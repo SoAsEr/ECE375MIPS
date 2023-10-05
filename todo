@@ -1,5 +1,4 @@
-1. Clean up / run tests for beq, bne
-
-2. Tests for lbu, lhu, lui, lw, sll, srl, sb, sw, bgtz, blez, sltiu
-
-3. Verify sh works / more endianness testing
+1. lui
+2. sll, srl, blez, sltiu
+3. Tests for lbu, lhu, sb
+4. Verify sh works / more endianness testing
