@@ -158,8 +158,8 @@ int main(int argc, char** argv) {
 
         uint32_t branchAddr = PC + (signExtImm<<2);
         uint32_t jumpAddr = address<<2;// assumes PC += 4 just happened
-        printf("%x %x %x %x %x\n", regData.reg.t0, regData.reg.t1, regData.reg.t2, regData.reg.t3, regData.reg.t4);
-        printf("opcode %x\n", opcode);
+        //printf("%x %x %x %x %x\n", regData.reg.t0, regData.reg.t1, regData.reg.t2, regData.reg.t3, regData.reg.t4);
+        //printf("opcode %x\n", opcode);
         switch(opcode) {
             case OP_ZERO: // R-type instruction
                 switch(funct) {
