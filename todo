@@ -1,5 +1,4 @@
-1. Fix j instructions (delay slot not working bc we didn't set encounteredBranch=true)
-and then re-test j, write tests for jal, jr
+1. write tests for jal, jr
 
 2. Clean up / run tests for beq, bne
 

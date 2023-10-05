@@ -158,7 +158,6 @@ int main(int argc, char** argv) {
 
         uint32_t branchAddr = PC + (signExtImm<<2);
         uint32_t jumpAddr = address<<2;// assumes PC += 4 just happened
-        printf("shamt %d\n", shamt);
         printf("%x %x %x %x %x\n", regData.reg.t0, regData.reg.t1, regData.reg.t2, regData.reg.t3, regData.reg.t4);
         printf("opcode %x\n", opcode);
         switch(opcode) {
@@ -288,13 +287,13 @@ int main(int argc, char** argv) {
 					printf("hello! inside slti \n");
 					printf("signed rs value: %d\n", signedrs);
 					printf("signExtImm value: %d\n", signExtImm);
-                    regData.registers[rd]=(signedrs < signExtImm) ? 1 : 0;
+                    regData.registers[rt]=(signedrs < signExtImm) ? 1 : 0;
                 }
                 break;
             case OP_SLTIU: //TEST
                 {
                     uint32_t unsignedsignedimm=signExtImm;
-                    regData.registers[rd]=(regData.registers[rs]  < unsignedsignedimm) ? 1 : 0;
+                    regData.registers[rt]=(regData.registers[rs]  < unsignedsignedimm) ? 1 : 0;
                 }
                 break;
             case OP_SB:
