@@ -1,3 +1,4 @@
+//Priya Naphade: pnaphade, Stephane Morel: sm3109
 #include <stdio.h>
 #include "MemoryStore.h"
 #include "RegisterInfo.h"
