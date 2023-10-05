@@ -2,8 +2,6 @@
 
 2. Clean up / run tests for beq, bne
 
-3. Tests for lbu, lhu, lui, lw, sll, srl, sb, sw, bgtz, blez
-
-4. Resolve issues with slti, test sltiu, verify sltu and slt working as expected
+3. Tests for lbu, lhu, lui, lw, sll, srl, sb, sw, bgtz, blez, sltiu
 
 5. Verify sh works / more endianness testing
