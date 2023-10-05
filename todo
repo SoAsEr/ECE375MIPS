@@ -1,3 +1,2 @@
-1. blez, sltiu
-2. Tests for lbu, lhu, sb
-3. Verify sh works / more endianness testing
+1. Tests for lbu, lhu, sb
+2. Verify sh works / more endianness testing
